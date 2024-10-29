@@ -3,8 +3,10 @@ from openai import OpenAI
 import pymongo
 from pymongo import MongoClient
 
-def display():
-    print(st.session_state.messages)
+
+def display(iterated_prompt):
+
+    st.text_area("Copy and paste your improved prompt below!", iterated_prompt, height=100, disabled=False)
     if prompt := st.chat_input("What is up?"):
 
         # Store and display the current prompt.
@@ -29,4 +31,3 @@ def display():
         with st.chat_message("assistant"):
             response = st.write_stream(stream)
         st.session_state.messages.append({"role": "assistant", "content": response})
-        

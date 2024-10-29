@@ -32,9 +32,9 @@ In this lab, you will develop a program that allows two players to play Tic-Tac-
     if st.session_state.display_mode == "state_1":
         state_1_initial_request.display()
     elif st.session_state.display_mode == "state_2":
-        state_2_choose_stage.display()
+        st.session_state.iterated_prompt = state_2_choose_stage.display()
     else: 
-        state_3_query_gpt.display()
+        state_3_query_gpt.display(st.session_state.iterated_prompt)
     
 with col2:
     # Editor section
