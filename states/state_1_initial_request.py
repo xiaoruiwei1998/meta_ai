@@ -6,7 +6,7 @@ from pymongo import MongoClient
 def display():
     # Set sessions states
     st.session_state.openai_api_key = ""
-    client = OpenAI(api_key=st.session_state.openai_api_key)
+    # client = OpenAI(api_key=st.session_state.openai_api_key)
 
     # Create a session state variable to store the chat messages. This ensures that the
     # messages persist across reruns.
@@ -23,14 +23,14 @@ def display():
         #     st.markdown(prompt)
 
         # Generate a response using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-4-turbo",
-            messages=[
-                {"role": m["role"], "content": m["content"]}
-                for m in st.session_state.messages
-            ],
-            stream=True,
-        )
+        # stream = client.chat.completions.create(
+        #     model="gpt-4-turbo",
+        #     messages=[
+        #         {"role": m["role"], "content": m["content"]}
+        #         for m in st.session_state.messages
+        #     ],
+        #     stream=True,
+        # )
 
         # Stream the response to the chat using st.write_stream, then store it in 
         # session state.
