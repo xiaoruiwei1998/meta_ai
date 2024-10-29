@@ -8,7 +8,7 @@ from pymongo import MongoClient
 
 def display():
     language = st.selectbox("Language mode", options=LANGUAGES, index=121)
-    content = st_ace(language=language, theme='vscode', min_lines=20, show_print_margin=True, key="user_code")
+    content = st_ace(language=language, theme='xcode', min_lines=20, show_print_margin=True, key="user_code")
    
     st.subheader("Output")
     if language == 'python':

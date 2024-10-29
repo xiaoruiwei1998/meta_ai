@@ -2,6 +2,7 @@ import streamlit as st
 from openai import OpenAI
 import pymongo
 from pymongo import MongoClient
+from annotated_text import annotated_text, annotation
 
 def display():
     st.subheader("Strategies")
@@ -21,40 +22,26 @@ def display():
     st.write(f"You are in the {current_stage} stage. Here are some suggestions to improve your prompt before asking ChatGPT:")
     st.selectbox("", ["Code Planning", "Code Writing", "Code Explanation", "Debugging Error Message", "Debugging Wrong Output"], index=["Code Planning", "Code Writing", "Code Explanation", "Debugging Error Message", "Debugging Wrong Output"].index(current_stage))
     print(st.session_state.messages)
+    initial_prompt = annotated_text(st.session_state.messages[0]['content'], " ", 
+                                    annotation("[specify stage here]","[stage]",font_family="Comic Sans MS", border="2px dashed red"), 
+                                    annotation("[specify strategy here]","[strategy]",font_family="Comic Sans MS", border="2px dashed red"), 
+                                    annotation("[paste the problem description here]","[problem]",font_family="Comic Sans MS", border="2px dashed red"), 
+                                    annotation("[paste your current code here]","[code]",font_family="Comic Sans MS", border="2px dashed red"))
     with st.chat_message("user"):
-        st.markdown(st.session_state.messages[0]['content']
-                    + "<br>[specify stage here]"
-                    + "<br>[specify strategy here]"
-                    + "<br>[paste the problem description here]"
-                    + "<br>[paste your current code here]", unsafe_allow_html=True)
+        st.markdown(initial_prompt, unsafe_allow_html=True)
     
     # suggestions on improving the prompt
-    with st.expander("Which stage you are in?", expanded=False):
-        st.write("Specify the stage (e.g. code planning, debugging) that you are currently in.")
-        comment = st.text_area("Add your comment here:", "", key="stage_comment")
-        if comment:
-            st.success("Comment added")
-            # todo: set default bg color; change color when completed
-
-    with st.expander("Specify the strategy", expanded=False):
-        st.write("Provide a detailed strategy for solving the problem.")
-        comment = st.text_area("Add your comment here:", "", key="strategy_comment")
-        if comment:
-            st.success("Comment added")
-            # todo: set default bg color; change color when completed
-
-    with st.expander("Add problem description", expanded=False):
-        st.write("Copy and paste the problem description here: ")
-        comment = st.text_area("Add your comment here:", "", key="description_comment")
-        if comment:
-            st.success("Comment added")
-
-    with st.expander("Add current code", expanded=False):
-        st.write("Copy and paste your current code here: ")
-        comment = st.text_area("Add your comment here:", "", key="code_comment")
-        if comment:
-            st.success("Comment added")
+    display_suggestion(suggestion_title="Which stage you are in?", suggestion_detail="Specify the stage you are in right now (e.g. debugging, planning, etc.): ", key="stage_suggestion", isExpanded=False, prompt=initial_prompt)
+    display_suggestion(suggestion_title="Specify the strategy", suggestion_detail="Provide a detailed strategy for solving the problem.", key="strategy_suggestion", isExpanded=False, prompt=initial_prompt)
+    display_suggestion(suggestion_title="Add problem description", suggestion_detail="Copy and paste the problem description here: ", key="problem_context_suggestion", isExpanded=False, prompt=initial_prompt)
+    display_suggestion(suggestion_title="Add current code", suggestion_detail="Copy and paste your current code here: ", key="code_context_suggestion", isExpanded=False, prompt=initial_prompt)
     
     if st.button("Query ChatGPT with the new prompt!"):
         st.session_state.display_mode = "state_3"
         st.rerun()
+
+def display_suggestion(suggestion_title, suggestion_detail, key, isExpanded, prompt):
+    with st.expander(suggestion_title, expanded=isExpanded):
+        comment = st.text_area(suggestion_detail, key=key)
+        if comment and st.button("Submit"):
+            print(prompt+suggestion_title)

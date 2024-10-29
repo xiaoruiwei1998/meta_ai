@@ -2,3 +2,4 @@ streamlit
 openai
 streamlit_ace
 pymongo
+st-annotated-text

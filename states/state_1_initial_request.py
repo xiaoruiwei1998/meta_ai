@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 def display():
     # Set sessions states
-    st.session_state.openai_api_key = "add apikey here"
+    st.session_state.openai_api_key = ""
     client = OpenAI(api_key=st.session_state.openai_api_key)
 
     # Create a session state variable to store the chat messages. This ensures that the
