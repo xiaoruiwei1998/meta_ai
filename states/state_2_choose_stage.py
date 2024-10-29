@@ -22,13 +22,13 @@ def display():
     st.write(f"You are in the {current_stage} stage. Here are some suggestions to improve your prompt before asking ChatGPT:")
     st.selectbox("", ["Code Planning", "Code Writing", "Code Explanation", "Debugging Error Message", "Debugging Wrong Output"], index=["Code Planning", "Code Writing", "Code Explanation", "Debugging Error Message", "Debugging Wrong Output"].index(current_stage))
     print(st.session_state.messages)
-    initial_prompt = annotated_text(st.session_state.messages[0]['content'], " ", 
-                                    annotation("[specify stage here]","[stage]",font_family="Comic Sans MS", border="2px dashed red"), 
-                                    annotation("[specify strategy here]","[strategy]",font_family="Comic Sans MS", border="2px dashed red"), 
-                                    annotation("[paste the problem description here]","[problem]",font_family="Comic Sans MS", border="2px dashed red"), 
-                                    annotation("[paste your current code here]","[code]",font_family="Comic Sans MS", border="2px dashed red"))
+    
     with st.chat_message("user"):
-        st.markdown(initial_prompt, unsafe_allow_html=True)
+        initial_prompt = annotated_text(st.session_state.messages[0]['content'], " ", 
+                                    annotation("[specify stage here]","[STAGE]",font_family="Comic Sans MS", background="#FFCCCB"), 
+                                    annotation("[specify strategy here]","[STRATEGY]",font_family="Comic Sans MS", background="#D9EAD3"), 
+                                    annotation("[paste the problem description here]","[PROBLEM]",font_family="Comic Sans MS", background="#FFCCCB"), 
+                                    annotation("[paste your current code here]","[CODE]",font_family="Comic Sans MS", background="#FFCCCB"))
     
     # suggestions on improving the prompt
     display_suggestion(suggestion_title="Which stage you are in?", suggestion_detail="Specify the stage you are in right now (e.g. debugging, planning, etc.): ", key="stage_suggestion", isExpanded=False, prompt=initial_prompt)
