@@ -40,4 +40,9 @@ def display():
         st.session_state.display_mode = "state_2"
         st.rerun()
         
-            
+def predict_stage(code, output):
+    """
+    use rule-based algorithm to predict the learners' help-seeking scenario
+    """
+    stage = "Code Planning"
+    return stage

@@ -33,7 +33,7 @@ def display():
     if st.button("Query ChatGPT with the new prompt!"):
         st.session_state.display_mode = "state_3"
         st.rerun()
-    return st.session_state.stage_input + st.session_state.strategy_input + st.session_state.problem_input + st.session_state.code_input 
+    return st.session_state.stage_input + "\n" +  st.session_state.strategy_input + "\n" + st.session_state.problem_input + "\n" + st.session_state.code_input 
 
 def display_edit_box(suggestion_title, placeholder, label):
     strategy_annotated_text = annotated_text(annotation(st.session_state.get(suggestion_title, placeholder), label, font_family="Comic Sans MS", background="#FFCCCB"))
