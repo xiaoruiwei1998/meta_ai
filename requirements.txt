@@ -3,5 +3,3 @@ openai
 streamlit_ace
 pymongo
 st-annotated-text
-import streamlit_authenticator as stauth
-yaml
