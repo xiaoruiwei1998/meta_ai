@@ -12,9 +12,11 @@ def display(iterated_prompt):
         st.session_state.messages.append({"role": "user", "content": prompt})
         for message in st.session_state.messages[1:]:
             with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+                st.markdown(st.session_state.openai_api_key)
+                # st.markdown(message["content"])
 
         # Generate a response using the OpenAI API.
+        print("st.session_state.openai_api_key", st.session_state.openai_api_key)
         client = OpenAI(api_key=st.session_state.openai_api_key)
         stream = client.chat.completions.create(
             model="gpt-4-turbo",
