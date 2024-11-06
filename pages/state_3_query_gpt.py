@@ -5,15 +5,14 @@ from pymongo import MongoClient
 
 
 def display(iterated_prompt):
-    st.text_area("Copy and paste your improved prompt below!", iterated_prompt, height=100, disabled=False)
+    st.text_area("Copy and paste your improved prompt below!", st.session_state.openai_api_key, height=100, disabled=False)
     if prompt := st.chat_input("What is up?"):
 
         # Store and display the current prompt.
         st.session_state.messages.append({"role": "user", "content": prompt})
         for message in st.session_state.messages[1:]:
             with st.chat_message(message["role"]):
-                st.markdown(st.session_state.openai_api_key)
-                # st.markdown(message["content"])
+                st.markdown(message["content"])
 
         # Generate a response using the OpenAI API.
         print("st.session_state.openai_api_key", st.session_state.openai_api_key)
