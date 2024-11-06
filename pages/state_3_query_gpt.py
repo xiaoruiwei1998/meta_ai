@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 
 def display(iterated_prompt):
-    st.text_area("Copy and paste your improved prompt below!", st.session_state.openai_api_key, height=100, disabled=False)
+    st.text_area("Copy and paste your improved prompt below!", iterated_prompt, height=100, disabled=False)
     if prompt := st.chat_input("What is up?"):
 
         # Store and display the current prompt.
