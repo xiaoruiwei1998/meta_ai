@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 def display():
     # Set sessions states
-    print("apikey", st.session_state.openai_api_key)
+    st.subheader("Write a prompt to ask for help")
     client = OpenAI(api_key=st.session_state.openai_api_key)
     if "messages" not in st.session_state:
         st.session_state.messages = []

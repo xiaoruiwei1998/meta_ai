@@ -17,8 +17,11 @@ db = client["test"]
 collection = db["activity_logs"]
 
 # Check if user is logged in
-if "logged_in" not in st.session_state or not st.session_state["logged_in"]:
-    login.login()
+# if "logged_in" not in st.session_state or not st.session_state["logged_in"]:
+#     login.login()
+st.session_state["openai_api_key"] = ""
+if 0: # for test use
+    pass
 else:
     # Main Content (Tic-Tac-Toe App)
     if "display_mode" not in st.session_state:
