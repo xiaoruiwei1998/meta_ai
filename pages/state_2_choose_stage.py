@@ -1,7 +1,7 @@
 import streamlit as st
 from openai import OpenAI
-# import pymongo
-# from pymongo import MongoClient
+import pymongo
+from pymongo import MongoClient
 from annotated_text import annotated_text, annotation
 from pages import stepper
 
@@ -44,60 +44,46 @@ def display():
     st.write(f"Based on our analysis, you are in the {current_stage} stage. Here are some suggestions to improve your prompt before asking ChatGPT:")
     st.selectbox("", ["Code Planning", "Code Writing", "Code Explanation", "Debugging Error Message", "Debugging Wrong Output"], index=["Code Planning", "Code Writing", "Code Explanation", "Debugging Error Message", "Debugging Wrong Output"].index(current_stage))
     
-    # st.write(initial_prompt+"<br>", unsafe_allow_html=True)
-    display_edit_box("stage_input", "[specify stage here]", "[STAGE]",stage_criteria_list)
-    display_edit_box("strategy_input", "[specify strategy here]", "[STRATEGY]",strategy_criteria_list)
-    display_edit_box("problem_input", "[paste the problem description here]", "[PROBLEM]",problem_criteria_list,True)
-    display_edit_box("code_input", "[paste your current code here]", "[CODE]", code_criteria_list)
+    st.write(initial_prompt+"<br>", unsafe_allow_html=True)
+    st.session_state.stage_input = display_edit_box("What's the type of your current problem?",stage_criteria_list)
+    st.session_state.strategy_input = display_edit_box("How would you like the output to be organized?",strategy_criteria_list)
+    st.session_state.problem_input = display_edit_box("Copy and paste the problem description here to help AI contextualize the response!",problem_criteria_list)
+    st.session_state.code_input = display_edit_box("Copy and paste your current code here ", code_criteria_list)
     
     if st.button("Query ChatGPT with the new prompt!"):
         st.session_state.display_mode = "state_3"
         st.rerun()
     return st.session_state.stage_input + "\n" +  st.session_state.strategy_input + "\n" + st.session_state.problem_input + "\n" + st.session_state.code_input 
 
-def display_edit_box(suggestion_title, placeholder, label, criteria_list=criteria_list, is_selected=False):
-    background_color = "#E8F0FE" if is_selected else "transparent"
-    isCompleted = False if False in criteria_list.values() else True
-    dot_color = "#4285F4" if isCompleted else "#D3D3D3"
-    step_html = f"""
-    <div style='display: flex; align-items: flex-start; margin-bottom: 20px; background-color: {background_color}; padding: 10px; border-radius: 8px;'>
-        <div style="background-color: {dot_color}; color: white; width: 30px; height: 30px; 
+def display_edit_box(component, criteria_list):
+    """
+    Display a box for each stage with its criteria and a prompt input area.
+    """
+    # Stage header with numbered circle
+    st.markdown(f"""
+    <div style='display: flex; align-items: center; margin-bottom: 10px;'>
+        <div style="background-color: #1a73e8; color: white; width: 30px; height: 30px; 
                     border-radius: 50%; display: flex; justify-content: center; 
-                    align-items: center; font-weight: bold; font-size: 18px;">
+                    align-items: center; font-weight: bold; font-size: 16px;">
         </div>
-        <div style="margin-left: 10px;">
-            <strong style="color: #1a73e8; font-size: 16px;">{suggestion_title}</strong>
+        <div style="margin-left: 10px; font-size: 20px; font-weight: bold; color: #333;">
+            {component}
         </div>
     </div>
-    """
+    """, unsafe_allow_html=True)
 
-    # Display the highlighted text in Streamlit
-    st.markdown(step_html, unsafe_allow_html=True)
+    # Display criteria as a bullet list
+    st.markdown("<div style=list-style-type: none; padding-left: 0;>", unsafe_allow_html=True)
+    for criterion, is_met in criteria_list.items():
+        color = "green" if is_met else "red"
+        st.markdown(f"""
+        <div style="padding-left: 40px; font-size: 16px; color: {color}; margin-bottom: 8px;">{'✔️' if is_met else '❌'} {criterion}</li>
+        """, unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
-
-    html_content = "<ul style='list-style-type: none; padding-left: 0;'>"
-    for criteria, isCorrect in criteria_list.items():
-        # Set the color and icon based on isCorrect
-        color = "green" if isCorrect else "orange"
-        icon = "✔️" if isCorrect else "⚠️"
-        # Create the HTML for each criteria
-        html_criteria = f"""<li style="display: flex; align-items: center; margin-bottom: 8px;">
-                <span style="color: {color}; font-size: 20px;">{icon}</span>
-                <span style="margin-left: 8px; color: {color};">{criteria}</span>
-            </li>
-        """
-        html_content += html_criteria
-    html_content += "</ul>"
-
-    # Display the criteria list as HTML
-    st.markdown(html_content, unsafe_allow_html=True)
-
-    annotation_text = st.text_area(
-        label="",
-        value="",
-        key=suggestion_title,
-        height=90
-    )
+    # Text input area for the stage prompt
+    text_input = st.text_area(f"Please write your {component} Prompt here", key=f"{component}_prompt")
+    return text_input
 
 
 def predict_stage(initial_prompt, problem_description, code, output, client=None, approach="rule-based"):
