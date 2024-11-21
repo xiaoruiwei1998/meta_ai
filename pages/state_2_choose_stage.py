@@ -1,7 +1,7 @@
 import streamlit as st
 from openai import OpenAI
-import pymongo
-from pymongo import MongoClient
+# import pymongo
+# from pymongo import MongoClient
 from annotated_text import annotated_text, annotation
 from pages import stepper
 
